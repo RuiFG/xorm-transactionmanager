@@ -3,7 +3,7 @@ package transaction_manager
 import (
 	"context"
 	"errors"
-	. "github.com/go-xorm/xorm"
+	. "xorm.io/xorm"
 )
 
 var (
@@ -41,7 +41,6 @@ func (ctm contextTransactionManager) Do(ctx context.Context, do TransactionFunc)
 	}
 	session = ctm.engine.NewSession()
 	sessionCtx := context.WithValue(ctx, ContextSessionKey{}, session)
-	defer session.Close()
 	if err := session.Begin(); err != nil {
 		return err
 	}
@@ -52,7 +51,7 @@ func (ctm contextTransactionManager) Do(ctx context.Context, do TransactionFunc)
 	if err := session.Commit(); err != nil {
 		return err
 	}
-	return nil
+	return session.Close()
 
 }
 

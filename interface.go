@@ -2,7 +2,7 @@ package transaction_manager
 
 import (
 	"context"
-	. "github.com/go-xorm/xorm"
+	. "xorm.io/xorm"
 )
 
 //return session of the transaction manager

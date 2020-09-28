@@ -3,10 +3,10 @@ package transaction_manager
 import (
 	"context"
 	"errors"
-	. "github.com/go-xorm/xorm"
 	"strconv"
 	"sync"
 	"sync/atomic"
+	. "xorm.io/xorm"
 )
 
 var (
@@ -49,7 +49,9 @@ func (tm *routineTransactionManager) Do(ctx context.Context, do TransactionFunc)
 			if result == nil {
 				result = session.Commit()
 			}
-			session.Close()
+			if err := session.Close(); err != nil {
+				result = err
+			}
 			tm.synchronizeSessionMap.Delete(curGoroutineID())
 		}()
 	}
