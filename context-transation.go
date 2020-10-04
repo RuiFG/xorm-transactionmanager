@@ -55,6 +55,12 @@ func (ctm contextTransactionManager) Do(ctx context.Context, do TransactionFunc)
 
 }
 
+func (ctm contextTransactionManager) IsInTransaction(ctx context.Context) bool {
+	value := ctx.Value(ContextSessionKey{})
+	_, ok := value.(*Session)
+	return ok
+}
+
 func NewContextTransactionManager(engine EngineInterface) TransactionManager {
 	return contextTransactionManager{engine: engine}
 }

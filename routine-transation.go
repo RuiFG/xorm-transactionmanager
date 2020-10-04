@@ -59,6 +59,11 @@ func (tm *routineTransactionManager) Do(ctx context.Context, do TransactionFunc)
 	return result
 }
 
+func (tm *routineTransactionManager) IsInTransaction(ctx context.Context) bool {
+	_, ok := tm.synchronizeSessionMap.Load(tm.id + strconv.FormatUint(curGoroutineID(), 10))
+	return ok
+}
+
 // NewRoutineTransactionManager
 func NewRoutineTransactionManager(engine EngineInterface) TransactionManager {
 
