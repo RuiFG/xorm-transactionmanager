@@ -32,7 +32,7 @@ func (tm *routineTransactionManager) DynamicSessionFunc() DynamicSession {
 	}
 }
 
-func (tm *routineTransactionManager) Do(ctx context.Context, do TransactionFunc) error {
+func (tm *routineTransactionManager) Do(ctx context.Context, transactionFunc TransactionFunc, definition ...TransactionDefinition) error {
 	var result error
 	store, loaded := tm.synchronizeSessionMap.LoadOrStore(tm.id+strconv.FormatUint(curGoroutineID(), 10), tm.engine.NewSession())
 	session, ok := store.(*Session)
@@ -55,13 +55,41 @@ func (tm *routineTransactionManager) Do(ctx context.Context, do TransactionFunc)
 			tm.synchronizeSessionMap.Delete(curGoroutineID())
 		}()
 	}
-	result = do(ctx, session)
+	result = transactionFunc(ctx, session)
 	return result
 }
 
 func (tm *routineTransactionManager) IsInTransaction(ctx context.Context) bool {
 	_, ok := tm.synchronizeSessionMap.Load(tm.id + strconv.FormatUint(curGoroutineID(), 10))
 	return ok
+}
+
+func (tm *routineTransactionManager) Required(ctx context.Context, transactionFunc TransactionFunc) error {
+	panic("implement me")
+}
+
+func (tm *routineTransactionManager) Supports(ctx context.Context, transactionFunc TransactionFunc) error {
+	panic("implement me")
+}
+
+func (tm *routineTransactionManager) Mandatory(ctx context.Context, transactionFunc TransactionFunc) error {
+	panic("implement me")
+}
+
+func (tm *routineTransactionManager) RequiresNew(ctx context.Context, transactionFunc TransactionFunc) error {
+	panic("implement me")
+}
+
+func (tm *routineTransactionManager) NotSupported(ctx context.Context, transactionFunc TransactionFunc) error {
+	panic("implement me")
+}
+
+func (tm *routineTransactionManager) Never(ctx context.Context, transactionFunc TransactionFunc) error {
+	panic("implement me")
+}
+
+func (tm *routineTransactionManager) Nested(ctx context.Context, transactionFunc TransactionFunc) error {
+	panic("implement me")
 }
 
 // NewRoutineTransactionManager
